@@ -1,0 +1,35 @@
+create table tbl_sungil_2023(
+	sno number(5) not null,
+	sname varchar2(15) not null,
+	admission date,
+	dept_code number(5),
+	constraint stu_pk primary key(sno)
+);
+
+desc tbl_sungil_2023;
+drop table tbl_sungil_2023;
+
+
+
+
+create sequence seq_stu
+start with 1
+increment by 1
+nocycle;
+
+
+
+
+create table tbl_school_dept(
+	dept_code number(6) not null,
+	school_name varchar2(40),
+	dept_name varchar2(40),
+	student_cnt number(3),
+	constraint school_pk primary key(dept_code)
+);
+
+
+create sequence seq_dept
+start with 10001
+increment by 1
+nocycle;

@@ -1,0 +1,231 @@
+테이블의 있는 데이터를 백업 테이블로 복제하는 프로시저
+
+create table books(
+	id number(2) primary key,
+	name varchar2(20) not null,
+	write varchar2(20) not null,
+	price number(10) default 0,
+	genre varchar2(20) not null,
+	publisher varchar2(20) not null,
+	cnt number(10) default 0
+);
+
+
+테이블 구조 및 데이터 복사하기
+create table books_bak as select * from books;
+
+테이블 구조"만" 복사
+create table books_bak as select * from books where 1=2;
+
+
+
+create sequence books_seq
+start with 1
+increment by 1
+nocycle;
+
+
+
+insert into books
+values(books_seq.nextval, '홍길동전', '허균', 300, '고선소설', '성일출판사', 2);
+insert into books
+values(books_seq.nextval, '레미제라블', '빅토르 위고', 900, '소설', '빅토르출판사', 5);
+
+
+
+
+create or replace procedure book_bak_proc
+(
+    BOOK_ID IN BOOKS.ID%TYPE
+)
+IS
+    CURSOR CSOR IS SELECT ID, NAME, WRITER, PRICE, GENRE, PUBLISHER, CNT FROM BOOKS WHERE ID = BOOK_ID;
+
+    B_ID BOOKS.ID%TYPE;
+    B_NAME BOOKS.NAME%TYPE;
+    B_WRITER BOOKS.WRITER%TYPE;
+    B_PRICE BOOKS.PRICE%TYPE;
+    B_GENRE BOOKS.GENRE%TYPE;
+    B_PUBLISHER BOOKS.PUBLISHER%TYPE;
+    B_CNT BOOKS.CNT%TYPE;
+    
+BEGIN
+    
+    OPEN CSOR;
+        LOOP
+            FETCH CSOR INTO B_ID, B_NAME, B_WRITER, B_PRICE, B_GENRE, B_PUBLISHER, B_CNT;
+            EXIT WHEN CSOR%NOTFOUND;
+                INSERT INTO BOOKS_BAK (ID, NAME, WRITER, PRICE, GENRE, PUBLISHER, CNT)
+                VALUES (B_ID, B_NAME, B_WRITER, B_PRICE, B_GENRE, B_PUBLISHER, B_CNT);
+                COMMIT;
+        END LOOP;
+    CLOSE CSOR;
+    
+END book_bak_proc;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create table entry(
+	backNumber number(2) primary key,
+	name varchar2(20) not null,
+	age number(2) not null,
+	position char(2) not null,
+	team varchar2(30) not null
+);
+
+
+create table entry_b11 as select * from entry;
+
+select * from all_constraints
+where table_name = 'entry_b111';
+
+
+
+
+create sequence entry_seq
+start with 1
+increment by 1
+maxvalue 26
+nocycle;
+
+
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '김승규', 31, 'GK', '알샤밥');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '김태환', 33, 'DF', '울산 현대');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '김진수', 30, 'DF', '전북 현대');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '김민재', 25, 'DF', '나폴리');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '정우영', 32, 'MF', '알 사드');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '황인범', 26, 'MF', '올림피아코스');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '손흥민', 30, 'MF', '토트넘');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '백승호', 25, 'MF', '전북 현대');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '조영욱', 23, 'FW', 'FC 서울');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '이재성', 30, 'MF', '마인츠');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '황희찬', 26, 'MF', '울버햄턴');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '송범근', 24, 'GK', '전북 현대');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '손준호', 30, 'MF', '산둥 루넝');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '홍철',   32, 'DF', '대구 FC');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '조유민', 25, 'DF', '대전 하나');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '황의조', 30, 'FW', '올림피아코스');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '나상호', 26, 'MF', 'FC 서울');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '양현준', 20, 'MF', '강원 FC');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '김영권', 32, 'DF', '울산 현대');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '권경원', 30, 'DF', '감바 오사카');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '김동준', 27, 'GK', '제주 유나이티드');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '권창훈', 28, 'MF', '김천 상무');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '김문환', 27, 'DF', '전북 현대');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '윤종규', 24, 'DF', 'FC 서울');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '정우영', 23, 'MF', '프라이부르크');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '이강인', 21, 'MF', '마요르카');
+INSERT INTO ENTRY
+VALUES (ENTRY_SEQ.NEXTVAL, '홍길동', 21, 'MF', '마요르카');
+
+
+
+
+
+
+
+create or replace procedure entry_b11_proc
+(
+	backnum in entry.backNumber%type;
+);
+is
+	corsur csor is select backNumber, name, age, position, team from entry where backNumber = backnum;
+	b_backnum entry.backNumber%type;
+	b_name entry.name%type;
+	b_age entry.age%type;
+	b_position entry.position%type;
+	b_team entry.team%type;
+begin
+	open csor;
+		loop
+			fatch csor into b_backnum, b_name, b_age, b_position, b_team;
+			exit when csor%notfound;
+			insert into entry_b11(backNumber, name, age, position, team)
+			values(b_backnum, b_name, b_age, b_position, b_team);
+			commit;
+		end loop;
+	close csor;
+end entry_b11_proc;
+/
+
+
+
+
+create or replace procedure book_bak_proc
+(
+    BOOK_ID IN BOOKS.ID%TYPE
+)
+IS
+    CURSOR CSOR IS SELECT ID, NAME, WRITER, PRICE, GENRE, PUBLISHER, CNT FROM BOOKS WHERE ID = BOOK_ID;
+    B_ID BOOKS.ID%TYPE;
+    B_NAME BOOKS.NAME%TYPE;
+    B_WRITER BOOKS.WRITER%TYPE;
+    B_PRICE BOOKS.PRICE%TYPE;
+    B_GENRE BOOKS.GENRE%TYPE;
+    B_PUBLISHER BOOKS.PUBLISHER%TYPE;
+    B_CNT BOOKS.CNT%TYPE;
+    
+BEGIN
+    
+    OPEN CSOR;
+        LOOP
+            FETCH CSOR INTO B_ID, B_NAME, B_WRITER, B_PRICE, B_GENRE, B_PUBLISHER, B_CNT;
+            EXIT WHEN CSOR%NOTFOUND;
+                INSERT INTO BOOKS_BAK (ID, NAME, WRITER, PRICE, GENRE, PUBLISHER, CNT)
+                VALUES (B_ID, B_NAME, B_WRITER, B_PRICE, B_GENRE, B_PUBLISHER, B_CNT);
+                COMMIT;
+        END LOOP;
+    CLOSE CSOR;
+    
+END book_bak_proc;
+/
